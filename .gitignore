@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Variables de entorno (¡Nunca subir credenciales!)
+.env
+.env.local
+
+# Archivos de Datos Crudos y Procesados (Ignorados por peso y seguridad)
+# Se asume que crearán una carpeta 'data' en la raíz
+data/raw/*
+data/processed/*
+*.csv
+*.xlsx
+*.xls
+*.sql
+*.dump
+
+# Excepciones para mantener la estructura de carpetas en Git
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db

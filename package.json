@@ -1,0 +1,27 @@
+{
+  "name": "alertacorte",
+  "version": "1.0.0",
+  "description": "Sistema Inteligente de Predicción de Colapso Energético en Redes, desarrollado mediante una Red Neuronal Artificial (Perceptrón Multicapa con Backpropagation).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bekermanmatias/AlertaCorte.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bekermanmatias/AlertaCorte/issues"
+  },
+  "homepage": "https://github.com/bekermanmatias/AlertaCorte#readme",
+  "dependencies": {
+    "brain.js": "^2.0.0-beta.24",
+    "csv-parser": "^3.2.1",
+    "dotenv": "^17.4.2",
+    "pg": "^8.21.0"
+  }
+}
