@@ -6,47 +6,103 @@ Sistema Inteligente de Predicción de Colapso Energético en Redes, desarrollado
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologias Utilizadas
 
 - **Entorno / ETL:** Node.js
-- **Base de Datos:** PostgreSQL
-- **Red Neuronal:** Brain.js
+- **Base de Datos:** Supabase Postgres
+- **Modelo:** Brain.js
 
 ---
 
-## ⚙️ Configuración del Entorno Local
-
-Sigan estos pasos para levantar el proyecto en sus máquinas locales de forma estandarizada.
+## Configuracion del Entorno
 
 ### 1. Prerrequisitos
-- Tener instalado [Node.js](https://nodejs.org/) (v18 o superior recomendada).
-- Tener instalado [PostgreSQL](https://www.postgresql.org/).
+- Tener instalado [Node.js](https://nodejs.org/) 18 o superior.
+- Tener creado un proyecto en Supabase.
+- Tener disponibles los archivos crudos en `data/raw/`.
 
-### 2. Instalación
-Clonar el repositorio e instalar las dependencias:
+### 2. Instalacion
 
 ```bash
-git clone [https://github.com/usuario/alertacorte.git](https://github.com/usuario/alertacorte.git)
-cd alertacorte
+git clone https://github.com/bekermanmatias/AlertaCorte.git
+cd AlertaCorte
 npm install
 ```
+
+### 3. Variables de entorno
+Copiar `.env.example` a `.env` y completar al menos:
+
+```bash
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+DB_SSL=true
+PGAPPNAME=alertacorte_etl
+CAMMESA_FILE_PATH=data/raw/cammesa_consumo_historico.xlsx
+CAMMESA_SHEET=Datos Region
+ENRE_SQL_DUMP_PATH=data/raw/datosenre.sql
+```
+
+### 4. Crear el esquema base
+
+```bash
+npm run db:setup
+```
+
+### 5. Cargar fuentes
+
+```bash
+npm run etl:cammesa
+npm run etl:enre
+```
+
+## Arquitectura de datos
+
+La base propia queda dividida en tres capas:
+
+- `raw`: trazabilidad de corridas de importacion.
+- `staging`: datos tipados y cercanos al origen.
+- `analytics`: dimensiones, hechos y vistas para cruces y modelado.
+
+Tablas principales:
+
+- `raw.import_runs`
+- `staging.cammesa_demanda_diaria`
+- `staging.enre_cortes_sector`
+- `analytics.dim_region`
+- `analytics.dim_sector_geo`
+- `analytics.region_sector_map`
+- `analytics.fact_demanda_diaria`
+- `analytics.fact_cortes_sector`
+
+Vistas disponibles:
+
+- `analytics.v_demanda_diaria_region`
+- `analytics.v_cortes_diarios_sector`
+- `analytics.v_training_daily_features`
+- `analytics.v_region_sector_map_gaps`
+
+## Estructura actual
 
 ```bash
 ALERTACORTE/
 ├── data/
-│   ├── raw/                 # Acá van los CSV pesados (poner un .gitkeep)
-│   └── processed/           # Datos post ETL (poner un .gitkeep)
+│   ├── raw/                 # Archivos fuente locales
+│   └── processed/           # Salidas intermedias opcionales
 ├── sql/
-│   └── 01_schema.sql        # Script para crear las tablas de PostgreSQL
+│   ├── 01_schemas.sql
+│   ├── 02_staging_tables.sql
+│   ├── 03_analytics_tables.sql
+│   └── 04_views.sql
 ├── src/
 │   ├── config/
-│   │   └── db.js            # Lógica de conexión a la base de datos
+│   │   └── db.js
 │   ├── etl/
-│   │   └── processData.js   # Script para leer, limpiar y normalizar los CSV
-│   └── model/
-│       └── network.js       # Arquitectura del Perceptrón de Brain.js
-├── .env                     # Tus credenciales locales (ya ignorado por git)
-├── .env.example             # Plantilla de credenciales para el grupo
+│   │   ├── setupDatabase.js
+│   │   ├── loadCammesa.js
+│   │   └── loadEnre.js
+│   └── utils/
+│       ├── importRun.js
+│       └── normalize.js
+├── .env.example
 ├── .gitignore
 ├── package.json
 └── README.md
