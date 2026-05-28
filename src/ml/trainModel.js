@@ -87,7 +87,7 @@ async function trainModel(config = resolveTrainConfig()) {
     hiddenLayers,
     threshold: decisionThreshold,
     thresholdTuning: {
-      strategy: 'maxima balanced accuracy en validacion (20% final cronologico)',
+      strategy: 'maxima balanced accuracy en validacion estratificada',
       defaultThreshold: config.threshold,
       optimalThreshold: decisionThreshold,
     },

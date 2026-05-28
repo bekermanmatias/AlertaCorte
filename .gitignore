@@ -2,6 +2,13 @@
 node_modules/
 package-lock.json
 
+# Referencias
+docs/
+
+# Rules
+.cursor/
+.cursor/rules/
+
 # Variables de entorno (¡Nunca subir credenciales!)
 .env
 .env.local
@@ -21,6 +28,9 @@ data/processed/*
 # Excepciones para mantener la estructura de carpetas en Git
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+
+# Dataset final requerido para la entrega
+!data/processed/dataset_modelo_predictivo_final_con_alerta.csv
 
 # Logs
 logs
