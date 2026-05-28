@@ -15,8 +15,8 @@ docs/
 # Archivos de Datos Crudos y Procesados (Ignorados por peso y seguridad)
 # Se asume que crearán una carpeta 'data' en la raíz
 data/raw/*
-data/processed/*
-*.csv
+#data/processed/*
+#*.csv
 *.xlsx
 *.xls
 *.sql
@@ -29,7 +29,7 @@ data/processed/*
 !data/processed/.gitkeep
 
 # Dataset final requerido para la entrega
-!data/processed/dataset_modelo_predictivo_final_con_alerta.csv
+#!data/processed/dataset_modelo_predictivo_final_con_alerta.csv
 
 # Logs
 logs

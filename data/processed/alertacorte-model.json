@@ -1,0 +1,364 @@
+{
+  "savedAt": "2026-05-28T18:52:56.080Z",
+  "brainVersion": "1.6.1",
+  "datasetPath": "C:\\Users\\TPIPOLO\\OneDrive - UTN FRLP\\2026\\Inteligencia Artificial\\AlertaCorte\\data\\processed\\dataset_modelo_predictivo_final_con_alerta.csv",
+  "inputColumns": [
+    "Tipo_Dia",
+    "Temperatura_Media_GBA",
+    "Demanda_Dia_Anterior",
+    "Mes_Estacional",
+    "Mes_Ciclico_Sin",
+    "Mes_Ciclico_Cos",
+    "Indice_Calor_Demanda"
+  ],
+  "outputColumn": "Alerta_Corte",
+  "scaler": {
+    "Tipo_Dia": {
+      "min": 0,
+      "max": 1,
+      "range": 1
+    },
+    "Temperatura_Media_GBA": {
+      "min": 0.9,
+      "max": 38.1,
+      "range": 37.2
+    },
+    "Demanda_Dia_Anterior": {
+      "min": 4309.6,
+      "max": 10036.6,
+      "range": 5727
+    },
+    "Mes_Estacional": {
+      "min": 1,
+      "max": 12,
+      "range": 11
+    },
+    "Mes_Ciclico_Sin": {
+      "min": -1,
+      "max": 1,
+      "range": 2
+    },
+    "Mes_Ciclico_Cos": {
+      "min": -1,
+      "max": 1,
+      "range": 2
+    },
+    "Indice_Calor_Demanda": {
+      "min": 0,
+      "max": 111.45375,
+      "range": 111.45375
+    }
+  },
+  "hiddenLayers": [
+    8,
+    4
+  ],
+  "threshold": 0.75,
+  "thresholdTuning": {
+    "strategy": "maxima balanced accuracy en validacion estratificada",
+    "defaultThreshold": 0.5,
+    "optimalThreshold": 0.75
+  },
+  "training": {
+    "iterations": 25000,
+    "errorThresh": 0.008,
+    "learningRate": 0.2,
+    "momentum": 0.08,
+    "log": true,
+    "logPeriod": 1000,
+    "iterationsCompleted": 25000,
+    "finalError": 0.025076686694177494
+  },
+  "split": {
+    "trainSize": 1409,
+    "balancedTrainSize": 1608,
+    "validationSize": 470,
+    "validationRatio": 0.25,
+    "strategy": "estratificado aleatorio (mantiene proporcion de alertas)"
+  },
+  "datasetProfile": {
+    "monthTemperatureRanges": {
+      "1": {
+        "min": 18.7,
+        "max": 38.1,
+        "count": 155
+      },
+      "2": {
+        "min": 19.1,
+        "max": 37.5,
+        "count": 145
+      },
+      "3": {
+        "min": 13.5,
+        "max": 33.8,
+        "count": 181
+      },
+      "4": {
+        "min": 11,
+        "max": 29.5,
+        "count": 153
+      },
+      "5": {
+        "min": 4.6,
+        "max": 23.5,
+        "count": 155
+      },
+      "6": {
+        "min": 0.9,
+        "max": 22.7,
+        "count": 150
+      },
+      "7": {
+        "min": 1.3,
+        "max": 22.7,
+        "count": 169
+      },
+      "8": {
+        "min": 3.3,
+        "max": 18.5,
+        "count": 161
+      },
+      "9": {
+        "min": 3.4,
+        "max": 22.1,
+        "count": 150
+      },
+      "10": {
+        "min": 8.2,
+        "max": 28,
+        "count": 155
+      },
+      "11": {
+        "min": 14.7,
+        "max": 32.8,
+        "count": 150
+      },
+      "12": {
+        "min": 19.8,
+        "max": 37.4,
+        "count": 155
+      }
+    }
+  },
+  "metrics": {
+    "train": {
+      "tp": 372,
+      "tn": 1192,
+      "fp": 14,
+      "fn": 30,
+      "accuracy": 0.972636815920398,
+      "precision": 0.9637305699481865,
+      "recall": 0.9253731343283582,
+      "f1": 0.9441624365482234,
+      "threshold": 0.75
+    },
+    "validation": {
+      "tp": 58,
+      "tn": 391,
+      "fp": 11,
+      "fn": 10,
+      "accuracy": 0.9553191489361702,
+      "precision": 0.8405797101449275,
+      "recall": 0.8529411764705882,
+      "f1": 0.8467153284671534,
+      "threshold": 0.75
+    }
+  },
+  "model": {
+    "sizes": [
+      7,
+      8,
+      4,
+      1
+    ],
+    "layers": [
+      {
+        "Tipo_Dia": {},
+        "Temperatura_Media_GBA": {},
+        "Demanda_Dia_Anterior": {},
+        "Mes_Estacional": {},
+        "Mes_Ciclico_Sin": {},
+        "Mes_Ciclico_Cos": {},
+        "Indice_Calor_Demanda": {}
+      },
+      {
+        "0": {
+          "bias": 11.392983436584473,
+          "weights": {
+            "Tipo_Dia": 2.481902599334717,
+            "Temperatura_Media_GBA": 25.010026931762695,
+            "Demanda_Dia_Anterior": -14.189580917358398,
+            "Mes_Estacional": -3.1516454219818115,
+            "Mes_Ciclico_Sin": -27.16123390197754,
+            "Mes_Ciclico_Cos": 3.704819679260254,
+            "Indice_Calor_Demanda": -55.016571044921875
+          }
+        },
+        "1": {
+          "bias": -24.017101287841797,
+          "weights": {
+            "Tipo_Dia": 3.8023734092712402,
+            "Temperatura_Media_GBA": 7.779755592346191,
+            "Demanda_Dia_Anterior": -14.78627872467041,
+            "Mes_Estacional": 1.975945234298706,
+            "Mes_Ciclico_Sin": -5.098618507385254,
+            "Mes_Ciclico_Cos": 5.6434783935546875,
+            "Indice_Calor_Demanda": 64.796630859375
+          }
+        },
+        "2": {
+          "bias": 5.063664436340332,
+          "weights": {
+            "Tipo_Dia": 11.816965103149414,
+            "Temperatura_Media_GBA": -28.641345977783203,
+            "Demanda_Dia_Anterior": -45.33906936645508,
+            "Mes_Estacional": 8.861626625061035,
+            "Mes_Ciclico_Sin": -3.259798288345337,
+            "Mes_Ciclico_Cos": -4.299541473388672,
+            "Indice_Calor_Demanda": 18.46038818359375
+          }
+        },
+        "3": {
+          "bias": -9.117548942565918,
+          "weights": {
+            "Tipo_Dia": 7.337620735168457,
+            "Temperatura_Media_GBA": -37.30806350708008,
+            "Demanda_Dia_Anterior": 19.3389949798584,
+            "Mes_Estacional": -6.97316837310791,
+            "Mes_Ciclico_Sin": 22.747316360473633,
+            "Mes_Ciclico_Cos": -5.1073994636535645,
+            "Indice_Calor_Demanda": -18.369083404541016
+          }
+        },
+        "4": {
+          "bias": 13.752684593200684,
+          "weights": {
+            "Tipo_Dia": 4.388675212860107,
+            "Temperatura_Media_GBA": -43.37582015991211,
+            "Demanda_Dia_Anterior": -48.2088623046875,
+            "Mes_Estacional": 8.633316993713379,
+            "Mes_Ciclico_Sin": 29.18728256225586,
+            "Mes_Ciclico_Cos": -6.108288764953613,
+            "Indice_Calor_Demanda": -64.97798919677734
+          }
+        },
+        "5": {
+          "bias": -16.48220443725586,
+          "weights": {
+            "Tipo_Dia": -3.4614195823669434,
+            "Temperatura_Media_GBA": -25.632282257080078,
+            "Demanda_Dia_Anterior": 35.011146545410156,
+            "Mes_Estacional": -8.344545364379883,
+            "Mes_Ciclico_Sin": 18.6691837310791,
+            "Mes_Ciclico_Cos": 3.9302806854248047,
+            "Indice_Calor_Demanda": -13.207128524780273
+          }
+        },
+        "6": {
+          "bias": 1.547562599182129,
+          "weights": {
+            "Tipo_Dia": -1.7704604864120483,
+            "Temperatura_Media_GBA": 12.923410415649414,
+            "Demanda_Dia_Anterior": 1.0008653402328491,
+            "Mes_Estacional": 8.833124160766602,
+            "Mes_Ciclico_Sin": 3.1589126586914062,
+            "Mes_Ciclico_Cos": -20.669403076171875,
+            "Indice_Calor_Demanda": -15.974139213562012
+          }
+        },
+        "7": {
+          "bias": -18.70382308959961,
+          "weights": {
+            "Tipo_Dia": -6.158962726593018,
+            "Temperatura_Media_GBA": -1.7730497121810913,
+            "Demanda_Dia_Anterior": 40.57749557495117,
+            "Mes_Estacional": 2.603238105773926,
+            "Mes_Ciclico_Sin": 8.884431838989258,
+            "Mes_Ciclico_Cos": -15.227287292480469,
+            "Indice_Calor_Demanda": 38.254207611083984
+          }
+        }
+      },
+      {
+        "0": {
+          "bias": -3.1431124210357666,
+          "weights": {
+            "0": 9.38707160949707,
+            "1": -4.229831218719482,
+            "2": -7.617730617523193,
+            "3": 26.883169174194336,
+            "4": -15.383652687072754,
+            "5": 2.4708333015441895,
+            "6": 20.70318031311035,
+            "7": -12.909989356994629
+          }
+        },
+        "1": {
+          "bias": 10.134105682373047,
+          "weights": {
+            "0": -14.583346366882324,
+            "1": -25.860973358154297,
+            "2": 11.149053573608398,
+            "3": -12.205310821533203,
+            "4": 5.237345218658447,
+            "5": -6.9845404624938965,
+            "6": -8.61032772064209,
+            "7": -2.1096205711364746
+          }
+        },
+        "2": {
+          "bias": 5.431327819824219,
+          "weights": {
+            "0": 5.940791130065918,
+            "1": -8.665576934814453,
+            "2": -11.91502571105957,
+            "3": 0.4229559004306793,
+            "4": -30.2147274017334,
+            "5": -16.57792091369629,
+            "6": 15.162684440612793,
+            "7": -21.6729736328125
+          }
+        },
+        "3": {
+          "bias": -23.06909942626953,
+          "weights": {
+            "0": 8.595427513122559,
+            "1": 14.784751892089844,
+            "2": -19.147930145263672,
+            "3": 8.103950500488281,
+            "4": 18.41509246826172,
+            "5": 31.351842880249023,
+            "6": 14.203679084777832,
+            "7": -7.214361190795898
+          }
+        }
+      },
+      {
+        "Alerta_Corte": {
+          "bias": 24.691587448120117,
+          "weights": {
+            "0": -21.586767196655273,
+            "1": -23.080228805541992,
+            "2": -17.842113494873047,
+            "3": -19.840240478515625
+          }
+        }
+      }
+    ],
+    "outputLookup": true,
+    "inputLookup": true,
+    "activation": "sigmoid",
+    "trainOpts": {
+      "iterations": 25000,
+      "errorThresh": 0.008,
+      "log": true,
+      "logPeriod": 1000,
+      "learningRate": 0.2,
+      "momentum": 0.08,
+      "callbackPeriod": 10,
+      "beta1": 0.9,
+      "beta2": 0.999,
+      "epsilon": 1e-8
+    }
+  }
+}

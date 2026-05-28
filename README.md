@@ -20,6 +20,7 @@ Modelo aprobado para la entrega:
 - **Entrenamiento:** Backpropagation.
 - **Implementacion:** Brain.js sobre Node.js.
 - **Validacion:** 25% de los patrones disponibles (`ML_VALIDATION_RATIO=0.25`).
+- **Features internas:** a partir de `Mes_Estacional` se calculan variables ciclicas y un indice calor-demanda para representar mejor la estacionalidad.
 
 Entradas de la red:
 
@@ -126,7 +127,15 @@ El dataset final esperado queda en `data/processed/dataset_modelo_predictivo_fin
 
 Ese CSV es el archivo de patrones que se entrega junto con el codigo. Por eso queda exceptuado del ignore del repositorio, a diferencia de los datos crudos y los artefactos generados del modelo.
 
-### 4. Entrenar la RNA
+### 4. Re-etiquetar alertas por severidad
+
+```bash
+npm run dataset:relabel
+```
+
+Este paso recalcula `Alerta_Corte` con reglas de severidad mas coherentes para el problema predictivo. El script crea un backup automatico del CSV original antes de sobrescribir el dataset final.
+
+### 5. Entrenar la RNA
 
 ```bash
 npm run ml:train
@@ -137,13 +146,13 @@ El entrenamiento genera:
 - `data/processed/alertacorte-model.json`
 - `data/processed/alertacorte-metrics.json`
 
-### 5. Probar una prediccion por consola
+### 6. Probar una prediccion por consola
 
 ```bash
 npm run ml:predict
 ```
 
-### 6. Levantar API e interfaz web
+### 7. Levantar API e interfaz web
 
 ```bash
 npm run api:start
@@ -163,6 +172,8 @@ curl -X POST http://127.0.0.1:3000/api/predict \
   -H "Content-Type: application/json" \
   -d "{\"tipo_dia\":1,\"temperatura\":32.5,\"demanda\":8500,\"mes\":1}"
 ```
+
+La prediccion tambien informa advertencias cuando una combinacion esta fuera del rango historico del mes o cuando se aplica un ajuste de dominio por estres termico estacional.
 
 ## Arquitectura De Datos
 
@@ -196,6 +207,7 @@ Vistas disponibles:
 - `npm run etl:cammesa`: carga demanda historica CAMMESA.
 - `npm run etl:enre`: carga cortes ENRE.
 - `npm run dataset:complete`: genera/completa el dataset predictivo final.
+- `npm run dataset:relabel`: recalcula `Alerta_Corte` por severidad y guarda backup del CSV previo.
 - `npm run ml:train`: entrena la red neuronal y guarda modelo/metricas.
 - `npm run ml:predict`: ejecuta una prediccion de prueba.
 - `npm run api:start`: inicia API Express e interfaz web.
