@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AlertaCorte — Predicción</title>
+    <link rel="stylesheet" href="/css/app.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">⚡</span>
+          <div>
+            <h1>AlertaCorte</h1>
+            <p>Predicción de colapso energético — GBA</p>
+          </div>
+        </div>
+        <span id="model-status" class="status-pill">Verificando modelo…</span>
+      </header>
+
+      <main class="layout">
+        <section class="card form-card">
+          <h2>Datos del día a evaluar</h2>
+          <p class="hint">
+            Ingresá las variables del modelo. La red neuronal estima la probabilidad de alerta de corte.
+          </p>
+
+          <form id="predict-form" novalidate>
+            <div class="field">
+              <label for="tipo_dia">Tipo de día</label>
+              <select id="tipo_dia" name="tipo_dia" required>
+                <option value="1">1 — Hábil (laborable)</option>
+                <option value="0">0 — No laborable (fin de semana / feriado)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="temperatura">Temperatura media GBA (°C)</label>
+              <input
+                id="temperatura"
+                name="temperatura"
+                type="number"
+                step="0.1"
+                min="-30"
+                max="55"
+                placeholder="Ej: 32.5"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="demanda">Demanda día anterior (MW)</label>
+              <input
+                id="demanda"
+                name="demanda"
+                type="number"
+                step="0.1"
+                min="1"
+                placeholder="Ej: 8500"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="mes">Mes estacional (1–12)</label>
+              <input
+                id="mes"
+                name="mes"
+                type="number"
+                min="1"
+                max="12"
+                step="1"
+                placeholder="Ej: 1"
+                required
+              />
+            </div>
+
+            <div class="actions">
+              <button type="submit" id="submit-btn">Predecir alerta</button>
+              <button type="button" id="demo-btn" class="secondary">Cargar ejemplo</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card result-card" id="result-card" hidden>
+          <h2>Resultado</h2>
+          <div id="result-alert" class="result-alert"></div>
+          <ul id="result-warnings" class="warnings" hidden></ul>
+          <dl class="result-metrics">
+            <div>
+              <dt>Probabilidad</dt>
+              <dd id="result-probability">—</dd>
+            </div>
+            <div>
+              <dt>Umbral del modelo</dt>
+              <dd id="result-threshold">—</dd>
+            </div>
+            <div>
+              <dt>Alerta (0/1)</dt>
+              <dd id="result-label">—</dd>
+            </div>
+          </dl>
+        </section>
+      </main>
+
+      <p id="error-banner" class="error-banner" hidden></p>
+      <footer class="footer">UTN FR La Plata — Grupo 11 · Brain.js</footer>
+    </div>
+
+    <script src="/js/app.js" type="module"></script>
+  </body>
+</html>
