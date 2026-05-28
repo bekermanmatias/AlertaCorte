@@ -58,7 +58,6 @@ ALERTACORTE/
 │   ├── ml/                  # Dataset, escalado, entrenamiento y prediccion
 │   └── utils/
 ├── web/                     # Interfaz web minima para demo
-├── .cursor/rules/           # Contexto persistente para Cursor
 ├── .env.example
 ├── package.json
 └── README.md
@@ -215,4 +214,4 @@ La entrega final debe incluir:
 
 ## Notas De Versionado
 
-No se versionan credenciales, `.env`, datos crudos ni artefactos generados del modelo. Como excepcion, se versiona `data/processed/dataset_modelo_predictivo_final_con_alerta.csv` porque es el dataset final requerido para la entrega.
+No se versionan credenciales, `.env`, datos crudos, artefactos generados del modelo ni configuraciones locales de Cursor (`.cursor/`). Como excepcion, se versiona `data/processed/dataset_modelo_predictivo_final_con_alerta.csv` porque es el dataset final requerido para la entrega.
