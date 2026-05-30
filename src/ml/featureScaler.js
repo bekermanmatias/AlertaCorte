@@ -1,4 +1,5 @@
 const { INPUT_COLUMNS } = require('./loadPredictiveDataset');
+const { addDerivedFeatures } = require('./derivedFeatures');
 
 function buildScaler(rows) {
   const stats = {};
@@ -21,10 +22,11 @@ function buildScaler(rows) {
 
 function scaleInput(input, stats) {
   const scaled = {};
+  const featuredInput = addDerivedFeatures(input);
 
   for (const column of INPUT_COLUMNS) {
     const { min, range } = stats[column];
-    scaled[column] = (input[column] - min) / range;
+    scaled[column] = (featuredInput[column] - min) / range;
   }
 
   return scaled;

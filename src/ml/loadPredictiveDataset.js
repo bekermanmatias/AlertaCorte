@@ -1,11 +1,6 @@
 const fs = require('fs');
 
-const INPUT_COLUMNS = [
-  'Tipo_Dia',
-  'Temperatura_Media_GBA',
-  'Demanda_Dia_Anterior',
-  'Mes_Estacional',
-];
+const { addDerivedFeatures, BASE_INPUT_COLUMNS, INPUT_COLUMNS } = require('./derivedFeatures');
 
 const OUTPUT_COLUMN = 'Alerta_Corte';
 
@@ -66,7 +61,7 @@ function loadPredictiveDataset(filePath) {
   const delimiter = lines[0].includes(';') ? ';' : ',';
   const headers = parseCsvLine(lines[0], delimiter).map((header) => header.trim());
 
-  for (const column of [...INPUT_COLUMNS, OUTPUT_COLUMN]) {
+  for (const column of [...BASE_INPUT_COLUMNS, OUTPUT_COLUMN]) {
     if (!headers.includes(column)) {
       throw new Error(`Columna requerida ausente "${column}" en ${filePath}`);
     }
@@ -84,7 +79,7 @@ function loadPredictiveDataset(filePath) {
     const input = {};
     let valid = true;
 
-    for (const column of INPUT_COLUMNS) {
+    for (const column of BASE_INPUT_COLUMNS) {
       const value = parseNumber(cells[columnIndex[column]]);
       if (value == null) {
         valid = false;
@@ -104,7 +99,7 @@ function loadPredictiveDataset(filePath) {
 
     rows.push({
       fecha,
-      input,
+      input: addDerivedFeatures(input),
       output: { [OUTPUT_COLUMN]: alerta },
       meta: { fecha },
     });
@@ -122,6 +117,7 @@ function loadPredictiveDataset(filePath) {
 }
 
 module.exports = {
+  BASE_INPUT_COLUMNS,
   INPUT_COLUMNS,
   OUTPUT_COLUMN,
   loadPredictiveDataset,

@@ -24,7 +24,7 @@ function resolveMlConfig() {
       process.cwd(),
       process.env.ML_METRICS_PATH || 'data/processed/alertacorte-metrics.json',
     ),
-    validationRatio: parseFloatEnv(process.env.ML_VALIDATION_RATIO, 0.2),
+    validationRatio: parseFloatEnv(process.env.ML_VALIDATION_RATIO, 0.25),
     threshold: parseFloatEnv(process.env.ML_PREDICTION_THRESHOLD, 0.5),
     hiddenLayers: (process.env.ML_HIDDEN_LAYERS || '8,4')
       .split(',')

@@ -2,6 +2,12 @@
 node_modules/
 package-lock.json
 
+# Referencias
+docs/
+
+# Configuracion local de Cursor
+.cursor/
+
 # Variables de entorno (¡Nunca subir credenciales!)
 .env
 .env.local
@@ -9,8 +15,8 @@ package-lock.json
 # Archivos de Datos Crudos y Procesados (Ignorados por peso y seguridad)
 # Se asume que crearán una carpeta 'data' en la raíz
 data/raw/*
-data/processed/*
-*.csv
+#data/processed/*
+#*.csv
 *.xlsx
 *.xls
 *.sql
@@ -21,6 +27,9 @@ data/processed/*
 # Excepciones para mantener la estructura de carpetas en Git
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+
+# Dataset final requerido para la entrega
+#!data/processed/dataset_modelo_predictivo_final_con_alerta.csv
 
 # Logs
 logs

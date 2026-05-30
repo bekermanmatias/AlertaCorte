@@ -45,6 +45,51 @@ function splitTrainValidation(rows, validationRatio, outputColumn) {
   };
 }
 
+function buildDatasetProfile(rows) {
+  const monthTemperatureRanges = {};
+
+  for (const row of rows) {
+    const month = row.input.Mes_Estacional;
+    const temperature = row.input.Temperatura_Media_GBA;
+
+    if (!monthTemperatureRanges[month]) {
+      monthTemperatureRanges[month] = {
+        min: temperature,
+        max: temperature,
+        count: 0,
+      };
+    }
+
+    monthTemperatureRanges[month].min = Math.min(monthTemperatureRanges[month].min, temperature);
+    monthTemperatureRanges[month].max = Math.max(monthTemperatureRanges[month].max, temperature);
+    monthTemperatureRanges[month].count += 1;
+  }
+
+  return {
+    monthTemperatureRanges,
+  };
+}
+
+function balanceTrainingRows(rows, outputColumn) {
+  const positives = rows.filter((row) => row.output[outputColumn] === 1);
+  const negatives = rows.filter((row) => row.output[outputColumn] === 0);
+  const targetPositiveRatio = 0.25;
+
+  if (!positives.length || positives.length >= negatives.length) {
+    return rows;
+  }
+
+  const targetPositiveCount = Math.ceil((targetPositiveRatio * negatives.length) / (1 - targetPositiveRatio));
+  const extraPositiveCount = Math.max(0, targetPositiveCount - positives.length);
+  const balancedRows = [...rows];
+
+  for (let index = 0; index < extraPositiveCount; index += 1) {
+    balancedRows.push(positives[index % positives.length]);
+  }
+
+  return balancedRows;
+}
+
 async function trainModel(config = resolveTrainConfig()) {
   const { rows, inputColumns, outputColumn } = loadPredictiveDataset(config.datasetPath);
   const positiveCount = rows.filter((row) => row.output[outputColumn] === 1).length;
@@ -55,7 +100,8 @@ async function trainModel(config = resolveTrainConfig()) {
     outputColumn,
   );
   const scaler = buildScaler(trainRows);
-  const trainData = rowsToBrainData(trainRows, scaler);
+  const balancedTrainRows = balanceTrainingRows(trainRows, outputColumn);
+  const trainData = rowsToBrainData(balancedTrainRows, scaler);
   const validationData = rowsToBrainData(validationRows, scaler);
 
   const hiddenLayers = config.hiddenLayers.length ? config.hiddenLayers : [8, 4];
@@ -67,6 +113,7 @@ async function trainModel(config = resolveTrainConfig()) {
   console.log(`[ML] Dataset: ${config.datasetPath}`);
   console.log(`[ML] Filas: ${rows.length} | Positivos: ${positiveCount} (${((positiveCount / rows.length) * 100).toFixed(1)}%)`);
   console.log(`[ML] Train: ${trainRows.length} | Validacion: ${validationRows.length}`);
+  console.log(`[ML] Train balanceado para entrenamiento: ${balancedTrainRows.length}`);
   console.log(`[ML] Entradas: ${inputColumns.join(', ')} -> ${outputColumn}`);
   console.log(`[ML] Capas ocultas: [${hiddenLayers.join(', ')}]`);
 
@@ -87,7 +134,7 @@ async function trainModel(config = resolveTrainConfig()) {
     hiddenLayers,
     threshold: decisionThreshold,
     thresholdTuning: {
-      strategy: 'maxima balanced accuracy en validacion (20% final cronologico)',
+      strategy: 'maxima balanced accuracy en validacion estratificada',
       defaultThreshold: config.threshold,
       optimalThreshold: decisionThreshold,
     },
@@ -98,10 +145,12 @@ async function trainModel(config = resolveTrainConfig()) {
     },
     split: {
       trainSize: trainRows.length,
+      balancedTrainSize: balancedTrainRows.length,
       validationSize: validationRows.length,
       validationRatio: config.validationRatio,
       strategy: splitStrategy,
     },
+    datasetProfile: buildDatasetProfile(rows),
     metrics: {
       train: trainMetrics,
       validation: validationMetrics,
@@ -137,6 +186,8 @@ if (require.main === module) {
 }
 
 module.exports = {
+  balanceTrainingRows,
+  buildDatasetProfile,
   resolveTrainConfig,
   trainModel,
 };

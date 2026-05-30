@@ -8,13 +8,14 @@
     "etl:cammesa": "node src/etl/loadCammesa.js",
     "etl:enre": "node src/etl/loadEnre.js",
     "dataset:complete": "node scripts/completePredictiveDataset.js",
+    "dataset:relabel": "node scripts/relabelPredictiveDataset.js",
     "ml:train": "node src/ml/trainModel.js",
     "ml:predict": "node src/ml/predict.js",
     "api:stop": "node scripts/freeApiPort.js",
     "api:start": "node api/server.js",
     "api:restart": "node scripts/freeApiPort.js && node api/server.js",
     "start": "node api/server.js",
-    "test": "node --check src/config/db.js && node --check src/etl/setupDatabase.js && node --check src/etl/loadCammesa.js && node --check src/etl/loadEnre.js && node --check src/ml/config.js && node --check src/ml/predictor.js && node --check src/ml/loadPredictiveDataset.js && node --check src/ml/featureScaler.js && node --check src/ml/metrics.js && node --check src/ml/trainModel.js && node --check src/ml/predict.js && node --check api/config.js && node --check api/server.js && node --check api/routes/predict.js && node --check src/utils/importRun.js && node --check src/utils/normalize.js"
+    "test": "node --check src/config/db.js && node --check src/etl/setupDatabase.js && node --check src/etl/loadCammesa.js && node --check src/etl/loadEnre.js && node --check src/ml/config.js && node --check src/ml/derivedFeatures.js && node --check src/ml/predictor.js && node --check src/ml/loadPredictiveDataset.js && node --check src/ml/featureScaler.js && node --check src/ml/metrics.js && node --check src/ml/trainModel.js && node --check src/ml/predict.js && node --check api/config.js && node --check api/server.js && node --check api/routes/predict.js && node --check scripts/relabelPredictiveDataset.js && node --check src/utils/importRun.js && node --check src/utils/normalize.js"
   },
   "repository": {
     "type": "git",

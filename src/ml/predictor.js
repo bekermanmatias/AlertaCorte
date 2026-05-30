@@ -3,7 +3,7 @@ const brain = require('brain.js');
 
 const { resolveMlConfig } = require('./config');
 const { scaleInput } = require('./featureScaler');
-const { INPUT_COLUMNS } = require('./loadPredictiveDataset');
+const { BASE_INPUT_COLUMNS, INPUT_COLUMNS } = require('./loadPredictiveDataset');
 
 const FIELD_ALIASES = {
   Tipo_Dia: ['tipo_dia', 'tipoDia', 'Tipo_Dia'],
@@ -111,7 +111,7 @@ async function ensureModelReady(modelPath = resolveMlConfig().modelPath) {
 function buildInputWarnings(input, scaler) {
   const advertencias = [];
 
-  for (const column of INPUT_COLUMNS) {
+  for (const column of BASE_INPUT_COLUMNS) {
     const bounds = scaler?.[column];
     if (!bounds) {
       continue;
@@ -126,6 +126,65 @@ function buildInputWarnings(input, scaler) {
   }
 
   return advertencias;
+}
+
+function addSeasonalityWarnings(advertencias, input, artifact) {
+  const month = input.Mes_Estacional;
+  const temperature = input.Temperatura_Media_GBA;
+  const ranges = artifact.datasetProfile?.monthTemperatureRanges;
+  const monthRange = ranges?.[month];
+
+  if (!monthRange) {
+    return;
+  }
+
+  const tolerance = 2;
+  const lowerBound = monthRange.min - tolerance;
+  const upperBound = monthRange.max + tolerance;
+
+  if (temperature < lowerBound || temperature > upperBound) {
+    advertencias.push(
+      `Combinacion poco realista para el entrenamiento: en el mes ${month} la temperatura historica del dataset estuvo entre ${monthRange.min} °C y ${monthRange.max} °C.`,
+    );
+  }
+}
+
+function computeDomainRiskFloor(input) {
+  const month = input.Mes_Estacional;
+  const temperature = input.Temperatura_Media_GBA;
+  const demand = input.Demanda_Dia_Anterior;
+  const warmSeason = [12, 1, 2, 3].includes(month);
+  const springWarmSeason = [10, 11].includes(month);
+
+  if (warmSeason && temperature >= 32 && demand >= 5_800) {
+    return {
+      probability: 0.85,
+      reason: 'calor muy alto en temporada estival',
+    };
+  }
+
+  if (warmSeason && temperature >= 30 && demand >= 5_800) {
+    return {
+      probability: 0.78,
+      reason: 'calor alto en temporada estival',
+    };
+  }
+
+  if (springWarmSeason && temperature >= 30 && demand >= 5_800) {
+    return {
+      probability: 0.76,
+      reason: 'calor alto en primavera',
+    };
+  }
+
+  if (warmSeason && temperature >= 27 && demand >= 6_800) {
+    return {
+      probability: 0.7,
+      reason: 'temperatura y demanda elevadas para la estacion',
+    };
+  }
+
+  return null;
 }
 
 function formatProbability(probability) {
@@ -165,9 +224,19 @@ async function predict(body, options = {}) {
   const output = net.run(scaled);
   const outputColumn = artifact.outputColumn || 'Alerta_Corte';
   const rawProbability = Number(output[outputColumn] ?? Object.values(output)[0]);
-  const probability = Math.min(1, Math.max(0, rawProbability));
-  const alerta = probability >= threshold ? 1 : 0;
+  let probability = Math.min(1, Math.max(0, rawProbability));
   const advertencias = buildInputWarnings(input, artifact.scaler);
+  addSeasonalityWarnings(advertencias, input, artifact);
+
+  const domainRiskFloor = computeDomainRiskFloor(input);
+  if (domainRiskFloor && probability < domainRiskFloor.probability) {
+    probability = domainRiskFloor.probability;
+    advertencias.push(
+      `Probabilidad ajustada por criterio de dominio: ${domainRiskFloor.reason}.`,
+    );
+  }
+
+  const alerta = probability >= threshold ? 1 : 0;
 
   if (probability >= 0.995 || probability <= 0.005) {
     advertencias.push(
